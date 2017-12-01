@@ -29,6 +29,7 @@ public class ChatClient {
         System.out.println("Connecting...");
         try {
             socket = new Socket(host, port);
+            System.out.println("Server Connected "+socket);
 //            inpStream = new DataInputStream(System.in);
             outStream = new DataOutputStream(socket.getOutputStream());
             boolean con = true;
