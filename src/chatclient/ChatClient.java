@@ -17,31 +17,77 @@ import java.util.logging.Logger;
  *
  * @author syamcode
  */
-public class ChatClient {
+public class ChatClient implements Runnable{
     /**
      * @param args the command line arguments
      */
     Socket socket;
     DataOutputStream outStream;
-//    DataInputStream inpStream;
+    DataInputStream inpStream;
+    ChatClientThread client;
+    Thread thread;
     public void startClient(String host, int port) {
-        Scanner keyboard = new Scanner(System.in);
+        
         System.out.println("Connecting...");
         try {
             socket = new Socket(host, port);
             System.out.println("Server Connected "+socket);
-//            inpStream = new DataInputStream(System.in);
-            outStream = new DataOutputStream(socket.getOutputStream());
-            boolean con = true;
-            while(con) {
-                String str = keyboard.nextLine();
-                outStream.writeUTF(str);
-                outStream.flush();
-                con = !str.equals("/quit");     
-            }
-            close();
+            start();
         } catch (Exception e) {
             System.out.println(e);
+        }
+    }
+    
+    @Override
+    public void run() {
+        Scanner keyboard = new Scanner(System.in);
+        while(thread!=null) {
+            try{
+               String str = keyboard.nextLine();
+                outStream.writeUTF(str);
+                outStream.flush(); 
+            }
+            catch(Exception e) {
+                System.out.println(e);
+                stop();
+            }
+            
+        }
+    }
+    public void handle(String msg) {
+        if(msg.equals("/quit")) {
+            System.out.println("Bye.");
+            stop();
+        }
+        else {
+            System.out.println(msg);
+        }
+    }
+    public void start() throws IOException {
+        outStream = new DataOutputStream(socket.getOutputStream());
+        if(thread==null) {
+            client = new ChatClientThread(this, socket);
+            thread = new Thread(this);
+            thread.start();
+        }
+    }
+    public void stop() {
+        if(thread!=null) {
+            thread.stop();
+            thread=null;
+            try{
+                if(outStream!=null) {
+                    outStream.close();
+                }
+                if(socket!=null){
+                    socket.close();
+                }
+            }
+            catch(Exception e){
+                System.out.println(e);
+            }
+            client.close();
+            client.stop();
         }
     }
     public static void main(String[] args) { 
