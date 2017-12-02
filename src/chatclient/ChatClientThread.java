@@ -14,9 +14,9 @@ import java.net.Socket;
  * @author syamcode
  */
 class ChatClientThread extends Thread{
-    Socket socket;
-    ChatClient client;
-    DataInputStream inpStream;
+    private Socket socket;
+    private ChatClient client;
+    private DataInputStream inpStream;
     
     public ChatClientThread(ChatClient _client, Socket _socket) {
         client = _client;

@@ -21,11 +21,10 @@ public class ChatClient implements Runnable{
     /**
      * @param args the command line arguments
      */
-    Socket socket;
-    DataOutputStream outStream;
-    DataInputStream inpStream;
-    ChatClientThread client;
-    Thread thread;
+    private Socket socket;
+    private DataOutputStream outStream;
+    private ChatClientThread client;
+    private Thread thread;
     public void startClient(String host, int port) {
         
         System.out.println("Connecting...");
